@@ -7,6 +7,7 @@ import { getData, setData } from '../api.js';
 import { escapeHtml, toast } from '../main.js';
 import { ICONS } from '../icons.js';
 import { openPromptModal } from '../prompt-builder.js';
+import { t, getLang } from '../i18n.js';
 
 const LEVEL_COLORS = {
   '顶层框架': 'r', '内容SOP': 'p', '战略洞察': 'g', '哲学层': 'y',
@@ -34,25 +35,26 @@ let containerEl = null;
 
 export async function renderMethodology(container) {
   containerEl = container;
+  const lang = getLang();
   container.innerHTML = `
     <div class="crud-hd">
       <div>
-        <div class="ph-h"><span class="n">${ICONS.layers}</span>工作流库</div>
-        <div class="ph-sub">可复用的 AI 工作流模板 · 点击卡片展开步骤，每步可生成提示词</div>
+        <div class="ph-h"><span class="n">${ICONS.layers}</span>${t('wf.title')}</div>
+        <div class="ph-sub">${t('wf.subtitle')}</div>
       </div>
-      <button class="btn brand" id="wf-new">${ICONS.plus || '+'} 新建工作流</button>
+      <button class="btn brand" id="wf-new">${ICONS.plus || '+'} ${t('wf.newWorkflow')}</button>
     </div>
 
     <div class="wf-toolbar">
       <div class="wf-search">
         ${ICONS.search || '🔍'}
-        <input type="text" id="wf-search" placeholder="搜索工作流名称、描述或标签…">
+        <input type="text" id="wf-search" placeholder="${t('wf.searchPlaceholder')}">
       </div>
       <div class="wf-filters" id="wf-filters"></div>
     </div>
 
     <div class="wf-stats" id="wf-stats"></div>
-    <div class="wf-grid" id="wf-grid"><div class="empty">加载中…</div></div>
+    <div class="wf-grid" id="wf-grid"><div class="empty">${t('common.loading')}</div></div>
   `;
 
   try {
@@ -71,7 +73,7 @@ export async function renderMethodology(container) {
   const levels = [...new Set(items.map(i => i.level || '通用'))];
   const filters = container.querySelector('#wf-filters');
   filters.innerHTML = `
-    <span class="wf-filter on" data-level="all">全部 ${items.length}</span>
+    <span class="wf-filter on" data-level="all">${t('wf.all')} ${items.length}</span>
     ${levels.map(lv => `<span class="wf-filter" data-level="${escapeHtml(lv)}">${escapeHtml(lv)} ${items.filter(i => (i.level || '通用') === lv).length}</span>`).join('')}
   `;
   filters.querySelectorAll('.wf-filter').forEach(f => {
@@ -110,10 +112,10 @@ export async function renderMethodology(container) {
       return sum + i.steps.filter((_, idx) => stepState[`${i.title}-${idx}`]).length;
     }, 0);
     container.querySelector('#wf-stats').innerHTML = `
-      <div class="wf-stat"><div class="n">${filtered.length}</div><div class="l">工作流</div></div>
-      <div class="wf-stat"><div class="n">${totalSteps}</div><div class="l">总步骤</div></div>
-      <div class="wf-stat"><div class="n">${doneSteps}</div><div class="l">已完成</div></div>
-      <div class="wf-stat"><div class="n">${totalSteps > 0 ? Math.round(doneSteps / totalSteps * 100) : 0}%</div><div class="l">完成率</div></div>
+      <div class="wf-stat"><div class="n">${filtered.length}</div><div class="l">${t('wf.total')}</div></div>
+      <div class="wf-stat"><div class="n">${totalSteps}</div><div class="l">${t('wf.totalSteps')}</div></div>
+      <div class="wf-stat"><div class="n">${doneSteps}</div><div class="l">${t('wf.completed')}</div></div>
+      <div class="wf-stat"><div class="n">${totalSteps > 0 ? Math.round(doneSteps / totalSteps * 100) : 0}%</div><div class="l">${t('wf.completionRate')}</div></div>
     `;
 
     if (filtered.length === 0) {
@@ -121,13 +123,13 @@ export async function renderMethodology(container) {
         grid.innerHTML = `
           <div class="empty-state">
             <div class="es-icon">📚</div>
-            <div class="es-title">还没有工作流</div>
-            <div class="es-desc">工作流是多步骤的 AI 任务模板，按步骤执行，每步可生成提示词</div>
-            <button class="btn brand" id="es-new-workflow">+ 创建第一个工作流</button>
+            <div class="es-title">${lang === 'zh' ? '还没有工作流' : 'No workflows yet'}</div>
+            <div class="es-desc">${lang === 'zh' ? '工作流是多步骤的 AI 任务模板，按步骤执行，每步可生成提示词' : 'Workflows are multi-step AI task templates, execute step by step'}</div>
+            <button class="btn brand" id="es-new-workflow">+ ${lang === 'zh' ? '创建第一个工作流' : 'Create first workflow'}</button>
           </div>`;
         grid.querySelector('#es-new-workflow').addEventListener('click', () => openWorkflowForm());
       } else {
-        grid.innerHTML = '<div class="empty"><div class="ico">🔍</div>没有匹配的工作流，换个关键词试试</div>';
+        grid.innerHTML = `<div class="empty"><div class="ico">🔍</div>${lang === 'zh' ? '没有匹配的工作流，换个关键词试试' : 'No matching workflows, try different keywords'}</div>`;
       }
       return;
     }
