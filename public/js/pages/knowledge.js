@@ -5,22 +5,24 @@
 
 import { subscribe, getIdeas } from '../store.js';
 import { escapeHtml, switchPage } from '../main.js';
+import { t, getLang } from '../i18n.js';
 
 export function renderKnowledge(container) {
+  const lang = getLang();
   container.innerHTML = `
-    <div class="ph-h"><span class="n">📚</span>知识沉淀</div>
-    <div class="ph-sub">你的知识流水线：灵感进池 → 讨论出方法论 → 同步知识库</div>
+    <div class="ph-h"><span class="n">📚</span>${lang === 'zh' ? '知识沉淀' : 'Knowledge'}</div>
+    <div class="ph-sub">${lang === 'zh' ? '你的知识流水线：灵感进池 → 讨论出方法论 → 同步知识库' : 'Your knowledge pipeline: Ideas → Pool → Methodology → Knowledge Base'}</div>
 
     <!-- 流水线图 -->
     <div class="card full" style="margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;padding:8px 0">
-        <div style="text-align:center"><div style="font-size:24px">💡</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">灵感进池</div></div>
+        <div style="text-align:center"><div style="font-size:24px">💡</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">${lang === 'zh' ? '灵感进池' : 'Ideas'}</div></div>
         <div style="color:var(--dim);font-size:18px">→</div>
-        <div style="text-align:center"><div style="font-size:24px">🗂️</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">知识库池</div></div>
+        <div style="text-align:center"><div style="font-size:24px">🗂️</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">${lang === 'zh' ? '知识库池' : 'Pool'}</div></div>
         <div style="color:var(--dim);font-size:18px">→</div>
-        <div style="text-align:center"><div style="font-size:24px">🧠</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">方法论</div></div>
+        <div style="text-align:center"><div style="font-size:24px">🧠</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">${lang === 'zh' ? '方法论' : 'Methodology'}</div></div>
         <div style="color:var(--dim);font-size:18px">→</div>
-        <div style="text-align:center"><div style="font-size:24px">📚</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">知识库</div></div>
+        <div style="text-align:center"><div style="font-size:24px">📚</div><div style="font-size:12px;color:var(--brand);font-weight:700;margin-top:4px">${lang === 'zh' ? '知识库' : 'Knowledge Base'}</div></div>
       </div>
     </div>
 
