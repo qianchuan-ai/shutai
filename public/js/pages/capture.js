@@ -8,34 +8,36 @@ import { toast, escapeHtml } from '../main.js';
 import { ICONS } from '../icons.js';
 import { openPromptModal } from '../prompt-builder.js';
 import { extractFromAIChat } from '../ai-integration.js';
+import { t, getLang } from '../i18n.js';
 
 export function renderCapture(container) {
+  const lang = getLang();
   container.innerHTML = `
-    <div class="ph-h"><span class="n">${ICONS.zap}</span>灵感捕捉</div>
-    <div class="ph-sub">快速捕捉灵感 · 导入 AI 对话 · 一键发送到 AI 继续创作</div>
+    <div class="ph-h"><span class="n">${ICONS.zap}</span>${lang === 'zh' ? '灵感捕捉' : 'Capture'}</div>
+    <div class="ph-sub">${lang === 'zh' ? '快速捕捉灵感 · 导入 AI 对话 · 一键发送到 AI 继续创作' : 'Quick capture · Import AI chat · Send to AI for creation'}</div>
 
     <!-- 快速捕捉 -->
     <div class="card full" style="margin-bottom:16px">
-      <h4 style="margin-bottom:12px">${ICONS.edit} 快速捕捉</h4>
+      <h4 style="margin-bottom:12px">${ICONS.edit} ${lang === 'zh' ? '快速捕捉' : 'Quick Capture'}</h4>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <textarea id="capture-input" placeholder="随手记一个灵感，或粘贴 AI 对话内容…" style="flex:1;min-height:60px;resize:vertical"></textarea>
+        <textarea id="capture-input" placeholder="${lang === 'zh' ? '随手记一个灵感，或粘贴 AI 对话内容…' : 'Jot down an idea, or paste AI chat content…'}" style="flex:1;min-height:60px;resize:vertical"></textarea>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
-        <button class="btn brand" id="capture-save" style="margin-top:0">${ICONS.save} 保存灵感</button>
-        <button class="btn" id="capture-parse" style="margin-top:0">${ICONS.sparkles} 解析 AI 对话</button>
-        <button class="btn brand" id="capture-send" style="margin-top:0">${ICONS.sparkles} 提示工坊</button>
-        <span class="capture-count" id="capture-count" style="margin-left:auto;font-size:12px;color:var(--dim)">共 0 条</span>
+        <button class="btn brand" id="capture-save" style="margin-top:0">${ICONS.save} ${lang === 'zh' ? '保存灵感' : 'Save Idea'}</button>
+        <button class="btn" id="capture-parse" style="margin-top:0">${ICONS.sparkles} ${lang === 'zh' ? '解析 AI 对话' : 'Parse AI Chat'}</button>
+        <button class="btn brand" id="capture-send" style="margin-top:0">${ICONS.sparkles} ${t('hub.promptWorkshop')}</button>
+        <span class="capture-count" id="capture-count" style="margin-left:auto;font-size:12px;color:var(--dim)">${lang === 'zh' ? '共 0 条' : 'Total 0'}</span>
       </div>
     </div>
 
     <!-- 筛选 -->
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
       <div class="capture-filters" id="capture-filters">
-        <button class="cfilter on" data-filter="all">全部</button>
-        <button class="cfilter" data-filter="pending">待吸收</button>
-        <button class="cfilter" data-filter="absorbed">已吸收</button>
+        <button class="cfilter on" data-filter="all">${t('common.all')}</button>
+        <button class="cfilter" data-filter="pending">${lang === 'zh' ? '待吸收' : 'Pending'}</button>
+        <button class="cfilter" data-filter="absorbed">${lang === 'zh' ? '已吸收' : 'Absorbed'}</button>
       </div>
-      <input id="capture-search" placeholder="搜索灵感…" style="width:200px;margin-left:auto">
+      <input id="capture-search" placeholder="${lang === 'zh' ? '搜索灵感…' : 'Search ideas…'}" style="width:200px;margin-left:auto">
     </div>
 
     <!-- 灵感列表 -->
