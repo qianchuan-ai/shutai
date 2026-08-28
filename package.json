@@ -1,0 +1,17 @@
+{
+  "name": "shutai",
+  "version": "2.0.0",
+  "description": "枢台 · AI 提示词工作台 — 生成提示词、管理模板、沉淀输出，让 AI 协作可复用。",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["ai", "prompt", "workbench", "productivity", "prompt-management", "self-hosted", "open-source"],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
