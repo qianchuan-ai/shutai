@@ -6,6 +6,7 @@
 
 import { setData, getData } from './api.js';
 import { addIntakeOutput } from './store.js';
+import { t, getLang } from './i18n.js';
 
 // 历史记录
 const HISTORY_KEY = 'shutai_prompt_history';
@@ -180,13 +181,14 @@ export function openPromptModal(initialContent = '', autoAction = null) {
 
   modalEl = document.createElement('div');
   modalEl.className = 'prompt-modal-overlay';
+  const lang = getLang();
   modalEl.innerHTML = `
     <div class="prompt-modal pm-studio">
       <div class="pm-hd">
-        <h3>✨ 提示工坊</h3>
+        <h3>✨ ${t('pw.title')}</h3>
         <div class="pm-hd-right">
-          <button class="pm-history-btn" id="pm-history-btn" title="历史记录">🕐 历史</button>
-          <span class="pm-kbd-hint">数字键 1-6 快速选择</span>
+          <button class="pm-history-btn" id="pm-history-btn" title="${lang === 'zh' ? '历史记录' : 'History'}">🕐 ${t('pw.history')}</button>
+          <span class="pm-kbd-hint">${t('pw.quickSelect')}</span>
           <button class="pm-close" id="pm-close">×</button>
         </div>
       </div>
@@ -194,21 +196,21 @@ export function openPromptModal(initialContent = '', autoAction = null) {
         <!-- 历史记录面板 -->
         <div class="pm-history-panel" id="pm-history-panel" style="display:none">
           <div class="pm-history-hd">
-            <label>历史记录（最近 20 条）</label>
-            <button class="pm-history-clear" id="pm-history-clear">清空</button>
+            <label>${lang === 'zh' ? '历史记录（最近 20 条）' : 'History (last 20)'}</label>
+            <button class="pm-history-clear" id="pm-history-clear">${lang === 'zh' ? '清空' : 'Clear'}</button>
           </div>
           <div class="pm-history-list" id="pm-history-list"></div>
         </div>
 
         <!-- 内容输入 -->
         <div class="pm-section pm-input-section">
-          <label>内容 <span class="pm-hint" id="pm-count">0 字</span></label>
-          <textarea id="pm-content" class="pm-content-input" placeholder="在此输入或粘贴要处理的内容…" rows="3">${escapeHtml(initialContent)}</textarea>
+          <label>${t('pw.content')} <span class="pm-hint" id="pm-count">0 ${t('pw.chars')}</span></label>
+          <textarea id="pm-content" class="pm-content-input" placeholder="${lang === 'zh' ? '在此输入或粘贴要处理的内容…' : 'Enter or paste content to process…'}" rows="3">${escapeHtml(initialContent)}</textarea>
         </div>
 
         <!-- 6 个操作按钮 -->
         <div class="pm-section">
-          <label>选择操作</label>
+          <label>${t('pw.selectOperation')}</label>
           <div class="pm-actions-grid">
             ${QUICK_ACTIONS.map((a, i) => `
               <button class="pm-action-btn" data-action="${a.id}" style="--action-color: ${a.color}">
@@ -223,22 +225,22 @@ export function openPromptModal(initialContent = '', autoAction = null) {
         <!-- 结果预览 -->
         <div class="pm-section pm-result-section" id="pm-result-section" style="display:none">
           <div class="pm-result-hd">
-            <label>生成的提示词</label>
-            <span class="pm-copied-badge" id="pm-copied-badge" style="display:none">✓ 已复制到剪贴板</span>
+            <label>${t('pw.generatedPrompt')}</label>
+            <span class="pm-copied-badge" id="pm-copied-badge" style="display:none">✓ ${t('toast.copied')}</span>
           </div>
           <textarea id="pm-result" class="pm-result-textarea" readonly></textarea>
           <div class="pm-result-actions">
-            <button class="btn sm" id="pm-copy-again">📋 重新复制</button>
-            <button class="btn sm" id="pm-save-skill">💾 存为 Skill</button>
-            <button class="btn sm" id="pm-save-workflow">📚 存为工作流</button>
-            <button class="btn sm" id="pm-save-output">📥 保存输出</button>
-            <span class="pm-result-hint">已自动复制，去任意 AI 工具粘贴即可</span>
+            <button class="btn sm" id="pm-copy-again">📋 ${t('pw.reCopy')}</button>
+            <button class="btn sm" id="pm-save-skill">💾 ${t('pw.saveAsSkill')}</button>
+            <button class="btn sm" id="pm-save-workflow">📚 ${t('pw.saveAsWorkflow')}</button>
+            <button class="btn sm" id="pm-save-output">📥 ${t('pw.saveOutput')}</button>
+            <span class="pm-result-hint">${t('pw.autoCopied')}</span>
           </div>
         </div>
 
         <!-- 高级自定义 -->
         <div class="pm-advanced">
-          <button class="pm-adv-toggle" id="pm-adv-toggle">高级自定义（角色/任务/格式）▾</button>
+          <button class="pm-adv-toggle" id="pm-adv-toggle">${t('pw.advancedCustom')} ▾</button>
           <div class="pm-adv-body" id="pm-adv-body" style="display:none">
             <div class="pm-adv-grid">
               <div class="pm-adv-item">
