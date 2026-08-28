@@ -10,6 +10,7 @@ import { openPromptModal, QUICK_ACTIONS } from '../prompt-builder.js';
 import { openSkillModal } from './skills.js';
 import { getIntake, getIdeas } from '../store.js';
 import { addIdea } from '../store.js';
+import { t, getLang } from '../i18n.js';
 
 export async function renderHub(container) {
   // 加载推荐模板
@@ -34,30 +35,30 @@ export async function renderHub(container) {
   container.innerHTML = `
     <!-- 顶部：定位 -->
     <div class="hub-hero">
-      <div class="hub-brand">枢台 · AI 提示词工作台</div>
-      <h1 class="hub-title">把跟 AI 的协作，变成可复用的流程</h1>
-      <div class="hub-sub">生成提示词 → 复制到任意 AI → 沉淀为模板，下次直接用</div>
+      <div class="hub-brand">${t('hub.title')}</div>
+      <h1 class="hub-title">${t('hub.heroTitle')}</h1>
+      <div class="hub-sub">${t('hub.subtitle')}</div>
     </div>
 
     <!-- 使用统计 -->
     <div class="hub-stats">
-      <div class="hub-stat"><span class="hub-stat-n">${skills.length}</span><span class="hub-stat-l">Skill</span></div>
-      <div class="hub-stat"><span class="hub-stat-n">${workflows.length}</span><span class="hub-stat-l">工作流</span></div>
-      <div class="hub-stat"><span class="hub-stat-n">${savedCount}</span><span class="hub-stat-l">收藏</span></div>
-      <div class="hub-stat"><span class="hub-stat-n">${history.length}</span><span class="hub-stat-l">生成记录</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">${skills.length}</span><span class="hub-stat-l">${getLang() === 'zh' ? 'Skill' : 'Skills'}</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">${workflows.length}</span><span class="hub-stat-l">${t('wf.total')}</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">${savedCount}</span><span class="hub-stat-l">${getLang() === 'zh' ? '收藏' : 'Saved'}</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">${history.length}</span><span class="hub-stat-l">${getLang() === 'zh' ? '生成记录' : 'Generated'}</span></div>
     </div>
 
     <!-- 核心输入区 -->
     <div class="hub-input-card">
       <div class="hub-input-hd">
         <span class="hub-input-icon">${ICONS.sparkles}</span>
-        <span class="hub-input-title">提示工坊</span>
-        <span class="hub-input-hint">输入内容，选一个操作，自动生成提示词并复制</span>
+        <span class="hub-input-title">${t('hub.promptWorkshop')}</span>
+        <span class="hub-input-hint">${t('hub.promptWorkshop.desc')}</span>
       </div>
-      <textarea id="hub-input" class="hub-input-textarea" placeholder="例如：粘贴一篇文章，点「总结要点」一键生成提示词" rows="3"></textarea>
+      <textarea id="hub-input" class="hub-input-textarea" placeholder="${getLang() === 'zh' ? '例如：粘贴一篇文章，点「总结要点」一键生成提示词' : 'e.g. Paste an article, click Summarize to generate prompt'}" rows="3"></textarea>
       <div class="hub-input-toolbar">
-        <button class="hub-tool-btn" id="hub-try-example">✨ 试试示例</button>
-        <button class="hub-tool-btn" id="hub-save-idea">💡 保存为灵感</button>
+        <button class="hub-tool-btn" id="hub-try-example">✨ ${t('common.tryExample')}</button>
+        <button class="hub-tool-btn" id="hub-save-idea">💡 ${t('common.saveAsInspiration')}</button>
       </div>
       <div class="hub-actions">
         ${QUICK_ACTIONS.map(a => `
