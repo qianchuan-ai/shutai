@@ -5,11 +5,13 @@
 
 import { subscribe, getTodos, getIdeas, getIntake, getHabits, getHabitStreak, getHabitTotal, getTodayStr } from '../store.js';
 import { ICONS } from '../icons.js';
+import { t, getLang } from '../i18n.js';
 
 export function renderDashboard(container) {
+  const lang = getLang();
   container.innerHTML = `
-    <div class="ph-h"><span class="n">${ICONS.grid}</span>数据仪表盘</div>
-    <div class="ph-sub">你的工作台数据全景 · 纯 SVG 可视化，零外部依赖</div>
+    <div class="ph-h"><span class="n">${ICONS.grid}</span>${t('dashboard.title')}</div>
+    <div class="ph-sub">${lang === 'zh' ? '你的工作台数据全景 · 纯 SVG 可视化，零外部依赖' : 'Your workbench data overview · Pure SVG visualization, zero dependencies'}</div>
 
     <!-- 核心指标卡片 -->
     <div class="dash-stats" id="dash-stats"></div>
@@ -18,29 +20,29 @@ export function renderDashboard(container) {
     <div class="dash-grid">
       <!-- 待办完成率环形图 -->
       <div class="card">
-        <h4>${ICONS['check-circle']} 待办完成率</h4>
+        <h4>${ICONS['check-circle']} ${lang === 'zh' ? '待办完成率' : 'Todo Completion'}</h4>
         <div class="dash-chart" id="todo-ring"></div>
       </div>
       <!-- 最近7天打卡柱状图 -->
       <div class="card">
-        <h4>${ICONS.zap} 最近 7 天打卡</h4>
+        <h4>${ICONS.zap} ${lang === 'zh' ? '最近 7 天打卡' : 'Last 7 Days Check-in'}</h4>
         <div class="dash-chart" id="checkin-bar"></div>
       </div>
       <!-- 灵感趋势折线图 -->
       <div class="card">
-        <h4>${ICONS.lightbulb} 灵感积累趋势</h4>
+        <h4>${ICONS.lightbulb} ${lang === 'zh' ? '灵感积累趋势' : 'Idea Trend'}</h4>
         <div class="dash-chart" id="idea-line"></div>
       </div>
       <!-- 习惯完成率条形图 -->
       <div class="card">
-        <h4>${ICONS.target} 习惯完成率（近7天）</h4>
+        <h4>${ICONS.target} ${lang === 'zh' ? '习惯完成率（近7天）' : 'Habit Completion (7 days)'}</h4>
         <div class="dash-chart" id="habit-bar"></div>
       </div>
     </div>
 
     <!-- 数据明细 -->
     <div class="card full" style="margin-top:16px">
-      <h4>${ICONS.database} 数据明细</h4>
+      <h4>${ICONS.database} ${lang === 'zh' ? '数据明细' : 'Data Details'}</h4>
       <div class="dash-detail" id="dash-detail"></div>
     </div>
   `;
