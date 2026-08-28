@@ -1,0 +1,8 @@
+{
+  "port": 8765,
+  "title": "枢台 · 工作台",
+  "subtitle": "你的个人 AI 效率中枢",
+  "brand": "AI宇宙狂想家",
+  "dataDir": "./data",
+  "stateDir": "./.state"
+}
