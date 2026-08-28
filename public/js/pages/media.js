@@ -5,12 +5,14 @@
 
 import { getData } from '../api.js';
 import { escapeHtml } from '../main.js';
+import { t, getLang } from '../i18n.js';
 
 export async function renderMedia(container) {
+  const lang = getLang();
   container.innerHTML = `
-    <div class="ph-h"><span class="n">📣</span>自媒体运营</div>
-    <div class="ph-sub">选题运营 · 内容排期 · 多平台管理</div>
-    <div id="media-content"><div class="empty">加载中…</div></div>
+    <div class="ph-h"><span class="n">📣</span>${lang === 'zh' ? '自媒体运营' : 'Media Ops'}</div>
+    <div class="ph-sub">${lang === 'zh' ? '选题运营 · 内容排期 · 多平台管理' : 'Topic ops · Content schedule · Multi-platform management'}</div>
+    <div id="media-content"><div class="empty">${t('common.loading')}</div></div>
   `;
 
   let data = {};
