@@ -6,6 +6,7 @@
 import { subscribe, getHabits, toggleHabit, addHabit, deleteHabit, getHabitStreak, getHabitTotal, getTodayStr } from '../store.js';
 import { toast } from '../main.js';
 import { ICONS } from '../icons.js';
+import { t, getLang } from '../i18n.js';
 
 const HABIT_COLORS = {
   blue: { bg: 'rgba(90,143,176,0.15)', border: '#5a8fb0', text: '#5a8fb0' },
@@ -18,9 +19,10 @@ const HABIT_COLORS = {
 const HABIT_ICONS = ['water', 'heart', 'book', 'zap', 'moon', 'star', 'target', 'coffee', 'music', 'code'];
 
 export function renderHabits(container) {
+  const lang = getLang();
   container.innerHTML = `
-    <div class="ph-h"><span class="n">${ICONS.target}</span>习惯追踪</div>
-    <div class="ph-sub">每日打卡，连续天数，养成好习惯 · 点击今日格子切换完成状态</div>
+    <div class="ph-h"><span class="n">${ICONS.target}</span>${lang === 'zh' ? '习惯追踪' : 'Habits'}</div>
+    <div class="ph-sub">${lang === 'zh' ? '每日打卡，连续天数，养成好习惯 · 点击今日格子切换完成状态' : 'Daily check-in, streak tracking, build good habits · Click today cell to toggle'}</div>
 
     <!-- 统计卡片 -->
     <div class="habits-stats" id="habits-stats"></div>
