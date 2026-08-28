@@ -6,6 +6,7 @@
 import { switchPage, toast } from './main.js';
 import { getTodos, getIdeas, getIntake, addTodo, addIdea, getPendingIntakeCount, getHabits, getHabitTotal } from './store.js';
 import { ICONS } from './icons.js';
+import { t, getLang } from './i18n.js';
 
 // ── 页面导航项 ──────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -48,6 +49,7 @@ export function initCommandPalette() {
 
 // ── 构建面板 DOM ────────────────────────────────────────────
 function buildPalette() {
+  const lang = getLang();
   paletteEl = document.createElement('div');
   paletteEl.className = 'cmd-palette';
   paletteEl.id = 'cmd-palette';
@@ -56,15 +58,15 @@ function buildPalette() {
     <div class="cmd-modal">
       <div class="cmd-input-wrap">
         <span class="cmd-icon">${ICONS.search}</span>
-        <input type="text" id="cmd-input" placeholder="输入命令、页面或搜索内容…" autocomplete="off" spellcheck="false">
+        <input type="text" id="cmd-input" placeholder="${lang === 'zh' ? '输入命令、页面或搜索内容…' : 'Type command, page or search…'}" autocomplete="off" spellcheck="false">
         <span class="cmd-kbd">ESC</span>
       </div>
       <div class="cmd-results" id="cmd-results"></div>
       <div class="cmd-footer">
-        <span><kbd>↑</kbd><kbd>↓</kbd> 导航</span>
-        <span><kbd>↵</kbd> 执行</span>
-        <span><kbd>esc</kbd> 关闭</span>
-        <span class="cmd-footer-hint">输入 g 后按页面键快速跳转</span>
+        <span><kbd>↑</kbd><kbd>↓</kbd> ${lang === 'zh' ? '导航' : 'Navigate'}</span>
+        <span><kbd>↵</kbd> ${lang === 'zh' ? '执行' : 'Execute'}</span>
+        <span><kbd>esc</kbd> ${lang === 'zh' ? '关闭' : 'Close'}</span>
+        <span class="cmd-footer-hint">${lang === 'zh' ? '输入 g 后按页面键快速跳转' : 'Type g then page key to jump'}</span>
       </div>
     </div>
   `;
