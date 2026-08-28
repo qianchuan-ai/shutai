@@ -8,6 +8,7 @@ import { initStore, subscribe, addIdea, deleteIdea, getIdeas, markIdeaAbsorbed }
 import { ICONS } from './icons.js';
 import { initCommandPalette } from './command-palette.js';
 import { openPromptModal } from './prompt-builder.js';
+import { t, setLang, getLang, initI18n } from './i18n.js';
 
 // ── 页面模块注册（6 个核心模块，聚焦 AI 副驾驶）──────────
 import { renderHub } from './pages/hub.js';
@@ -18,11 +19,11 @@ import { renderCapture } from './pages/capture.js';
 import { renderSettings } from './pages/settings.js';
 
 const PAGES = {
-  hub: { title: '工作台', icon: 'home', num: 'HOME', render: renderHub },
-  inbox: { title: '资讯吸收', icon: 'inbox', num: 'INBOX', render: renderIntake },
-  playbooks: { title: '工作流', icon: 'layers', num: 'FLOW', render: renderMethodology },
-  skills: { title: 'Skill 库', icon: 'puzzle', num: 'SKILL', render: renderSkills },
-  settings: { title: '设置', icon: 'settings', num: 'SET', render: renderSettings },
+  hub: { titleKey: 'nav.home', numKey: 'nav.home.en', icon: 'home', render: renderHub },
+  inbox: { titleKey: 'nav.inbox', numKey: 'nav.inbox.en', icon: 'inbox', render: renderIntake },
+  playbooks: { titleKey: 'nav.workflow', numKey: 'nav.workflow.en', icon: 'layers', render: renderMethodology },
+  skills: { titleKey: 'nav.skills', numKey: 'nav.skills.en', icon: 'puzzle', render: renderSkills },
+  settings: { titleKey: 'nav.settings', numKey: 'nav.settings.en', icon: 'settings', render: renderSettings },
 };
 
 let currentPage = 'hub';
@@ -32,7 +33,7 @@ function renderNav() {
   const nav = document.getElementById('nav');
   nav.innerHTML = Object.entries(PAGES).map(([key, p]) => `
     <a data-page="${key}" class="${key === currentPage ? 'on' : ''}">
-      <span class="ico">${ICONS[p.icon] || p.icon}</span>${p.title}<span class="num">${p.num}</span>
+      <span class="ico">${ICONS[p.icon] || p.icon}</span>${t(p.titleKey)}<span class="num">${t(p.numKey)}</span>
     </a>
   `).join('');
 
@@ -102,7 +103,7 @@ function initFAB() {
     await addIdea(text);
     input.value = '';
     renderIdeaList();
-    toast('灵感已保存', 'ok');
+    toast(t('toast.saved'), 'ok');
   }
   save.addEventListener('click', saveIdea);
   input.addEventListener('keydown', e => {
@@ -111,16 +112,16 @@ function initFAB() {
 
   function renderIdeaList() {
     const ideas = getIdeas();
-    stat.textContent = `${ideas.length} 条`;
+    stat.innerHTML = `${ideas.length} <span data-i18n="fab.count">${t('fab.count')}</span>`;
     if (ideas.length === 0) {
-      list.innerHTML = '<div class="empty" style="padding:16px">还没有灵感，随手记一条吧</div>';
+      list.innerHTML = `<div class="empty" style="padding:16px">${getLang() === 'zh' ? '还没有灵感，随手记一条吧' : 'No ideas yet, jot one down'}</div>`;
       return;
     }
     list.innerHTML = ideas.map(i => `
       <div class="idea-row" data-id="${i.id}">
         <div class="it">${escapeHtml(i.text)}<div class="id">${formatTime(i.createdAt)}</div></div>
-        <button class="mini absorb" data-act="absorb" title="交给AI吸收">吸收</button>
-        <button class="mini del" data-act="del" title="删除">删</button>
+        <button class="mini absorb" data-act="absorb" title="${getLang() === 'zh' ? '交给AI吸收' : 'Send to AI'}">${getLang() === 'zh' ? '吸收' : 'Absorb'}</button>
+        <button class="mini del" data-act="del" title="${t('common.delete')}">${getLang() === 'zh' ? '删' : '×'}</button>
       </div>
     `).join('');
 
@@ -133,13 +134,41 @@ function initFAB() {
       row.querySelector('[data-act="absorb"]').addEventListener('click', async () => {
         await markIdeaAbsorbed(id);
         renderIdeaList();
-        toast('已送入吸收队列', 'ok');
+        toast(getLang() === 'zh' ? '已送入吸收队列' : 'Sent to inbox', 'ok');
       });
     });
   }
 
+  // 暴露给语言切换时调用
+  window.__renderFABList = renderIdeaList;
+
   // 状态变化时刷新列表（如果面板打开）
   subscribe(() => { if (panel.classList.contains('open')) renderIdeaList(); });
+}
+
+// ── 语言切换 ───────────────────────────────────────────────
+function initLang() {
+  initI18n();
+  const current = getLang();
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === current);
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      setLang(lang);
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+      // 重新渲染导航
+      renderNav();
+      // 重新渲染当前页面
+      switchPage(currentPage);
+      // 更新 FAB 统计
+      if (window.__renderFABList) window.__renderFABList();
+    });
+  });
+  // 监听语言变化事件（其他模块触发）
+  window.addEventListener('langchange', () => {
+    renderNav();
+    switchPage(currentPage);
+  });
 }
 
 // ── 主题切换 ───────────────────────────────────────────────
@@ -374,12 +403,15 @@ function formatTime(iso) {
 
 // ── 初始化 ─────────────────────────────────────────────────
 async function init() {
+  // 初始化 i18n（最先执行）
+  initLang();
+
   // 加载配置
   try {
     const config = await getConfig();
     if (config.title) document.getElementById('brand-name').textContent = config.title;
     if (config.brand) document.getElementById('brand-sign').textContent = config.brand;
-    document.title = config.title || '枢台 · 工作台';
+    document.title = config.title || t('brand.full');
   } catch (e) {
     console.warn('[枢台] 配置加载失败，使用默认值');
   }
