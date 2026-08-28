@@ -5,13 +5,15 @@
 
 import { getData } from '../api.js';
 import { escapeHtml } from '../main.js';
+import { t, getLang } from '../i18n.js';
 
 export async function renderAIGC(container) {
+  const lang = getLang();
   container.innerHTML = `
-    <div class="ph-h"><span class="n">🎬</span>AIGC 创作</div>
-    <div class="ph-sub">项目管理 · 进度追踪 · 提示词资产</div>
+    <div class="ph-h"><span class="n">🎬</span>${lang === 'zh' ? 'AIGC 创作' : 'AIGC Creation'}</div>
+    <div class="ph-sub">${lang === 'zh' ? '项目管理 · 进度追踪 · 提示词资产' : 'Project management · Progress tracking · Prompt assets'}</div>
     <div class="grid" id="aigc-grid">
-      <div class="empty">加载中…</div>
+      <div class="empty">${t('common.loading')}</div>
     </div>
   `;
 
