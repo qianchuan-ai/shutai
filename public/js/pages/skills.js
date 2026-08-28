@@ -6,6 +6,7 @@
 import { getData, setData } from '../api.js';
 import { escapeHtml, toast } from '../main.js';
 import { ICONS } from '../icons.js';
+import { t, getLang } from '../i18n.js';
 
 const CATEGORY_OPTIONS = ['内容创作', '自媒体', '开发', '数据', '通用', '视频', '图像', '运营'];
 const ICON_OPTIONS = ['file', 'film', 'zap', 'tool', 'megaphone', 'target', 'globe', 'lightbulb', 'puzzle', 'layers', 'compass', 'database', 'flag', 'book', 'sparkles'];
@@ -13,23 +14,24 @@ const ICON_OPTIONS = ['file', 'film', 'zap', 'tool', 'megaphone', 'target', 'glo
 let skills = [];
 
 export async function renderSkills(container) {
+  const lang = getLang();
   container.innerHTML = `
     <div class="crud-hd">
       <div>
-        <div class="ph-h"><span class="n">${ICONS.puzzle}</span>Skill 库</div>
-        <div class="ph-sub">可复用的提示词模板 · 支持变量填充，一键生成并复制</div>
+        <div class="ph-h"><span class="n">${ICONS.puzzle}</span>${t('skills.title')}</div>
+        <div class="ph-sub">${t('skills.subtitle')}</div>
       </div>
-      <button class="btn brand" id="sk-new">${ICONS.plus || '+'} 新建 Skill</button>
+      <button class="btn brand" id="sk-new">${ICONS.plus || '+'} ${t('skills.newSkill')}</button>
     </div>
 
     <div class="skill-toolbar">
       <div class="skill-search">
         ${ICONS.search || '🔍'}
-        <input type="text" id="skill-search" placeholder="搜索 Skill 名称、描述或标签…">
+        <input type="text" id="skill-search" placeholder="${t('skills.searchPlaceholder')}">
       </div>
     </div>
     <div class="skill-filters" id="skill-filters"></div>
-    <div class="skill-grid" id="skill-grid"><div class="empty">加载中…</div></div>
+    <div class="skill-grid" id="skill-grid"><div class="empty">${t('common.loading')}</div></div>
   `;
 
   try {
@@ -48,7 +50,7 @@ export async function renderSkills(container) {
   const categories = [...new Set(skills.map(s => s.category || '其他'))];
   const filters = container.querySelector('#skill-filters');
   filters.innerHTML = `
-    <span class="skill-filter on" data-cat="all">全部 ${skills.length}</span>
+    <span class="skill-filter on" data-cat="all">${t('common.all')} ${skills.length}</span>
     ${categories.map(cat => `<span class="skill-filter" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)} ${skills.filter(s => (s.category || '其他') === cat).length}</span>`).join('')}
   `;
   filters.querySelectorAll('.skill-filter').forEach(f => {
@@ -85,13 +87,13 @@ export async function renderSkills(container) {
         grid.innerHTML = `
           <div class="empty-state">
             <div class="es-icon">🧩</div>
-            <div class="es-title">还没有 Skill 模板</div>
-            <div class="es-desc">Skill 是可复用的提示词模板，支持变量填充，一键生成并复制</div>
-            <button class="btn brand" id="es-new-skill">+ 创建第一个 Skill</button>
+            <div class="es-title">${lang === 'zh' ? '还没有 Skill 模板' : 'No Skill templates yet'}</div>
+            <div class="es-desc">${lang === 'zh' ? 'Skill 是可复用的提示词模板，支持变量填充，一键生成并复制' : 'Skills are reusable prompt templates with variable fill-in, one-click generate and copy'}</div>
+            <button class="btn brand" id="es-new-skill">+ ${lang === 'zh' ? '创建第一个 Skill' : 'Create first Skill'}</button>
           </div>`;
         grid.querySelector('#es-new-skill').addEventListener('click', () => openSkillForm());
       } else {
-        grid.innerHTML = '<div class="empty"><div class="ico">🔍</div>没有匹配的 Skill，换个关键词试试</div>';
+        grid.innerHTML = `<div class="empty"><div class="ico">🔍</div>${lang === 'zh' ? '没有匹配的 Skill，换个关键词试试' : 'No matching Skills, try different keywords'}</div>`;
       }
       return;
     }
@@ -104,7 +106,7 @@ export async function renderSkills(container) {
             <div class="sk-icon">${ICONS[s.icon] || ICONS.puzzle}</div>
             <div class="sk-info">
               <div class="sk-name">${escapeHtml(s.name)}</div>
-              <div class="sk-cat"><span class="sk-type-badge">单步模板</span> ${escapeHtml(s.category || '其他')}</div>
+              <div class="sk-cat"><span class="sk-type-badge">${lang === 'zh' ? '单步模板' : 'Single-step'}</span> ${escapeHtml(s.category || (lang === 'zh' ? '其他' : 'Other'))}</div>
             </div>
             <div class="sk-card-acts">
               <button class="sk-card-btn" data-act="edit" title="编辑">${ICONS.edit || '✏️'}</button>
@@ -113,10 +115,10 @@ export async function renderSkills(container) {
           </div>
           <div class="sk-desc">${escapeHtml(s.desc || '')}</div>
           ${s.tags ? `<div class="sk-tags">${s.tags.slice(0, 4).map(t => `<span class="sk-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
-          ${s.variables && s.variables.length ? `<div class="sk-vars">变量：${s.variables.map(v => `<span class="sk-var">{{${escapeHtml(v)}}}</span>`).join(' ')}</div>` : ''}
+          ${s.variables && s.variables.length ? `<div class="sk-vars">${t('skills.variable')}：${s.variables.map(v => `<span class="sk-var">{{${escapeHtml(v)}}}</span>`).join(' ')}</div>` : ''}
           <div class="sk-acts">
-            <button class="btn sm brand" data-act="use">${ICONS.zap || '⚡'} 使用</button>
-            <button class="btn sm" data-act="preview">${ICONS.eye || '👁'} 预览</button>
+            <button class="btn sm brand" data-act="use">${ICONS.zap || '⚡'} ${t('skills.use')}</button>
+            <button class="btn sm" data-act="preview">${ICONS.eye || '👁'} ${t('skills.preview')}</button>
           </div>
         </div>
       `;
