@@ -5,12 +5,14 @@
 
 import { getData } from '../api.js';
 import { escapeHtml } from '../main.js';
+import { t, getLang } from '../i18n.js';
 
 export async function renderTools(container) {
+  const lang = getLang();
   container.innerHTML = `
-    <div class="ph-h"><span class="n">🧰</span>效率工具</div>
-    <div class="ph-sub">自研工具 / 插件 / 脚本资产</div>
-    <div class="grid" id="tools-grid"><div class="empty">加载中…</div></div>
+    <div class="ph-h"><span class="n">🧰</span>${lang === 'zh' ? '效率工具' : 'Tools'}</div>
+    <div class="ph-sub">${lang === 'zh' ? '自研工具 / 插件 / 脚本资产' : 'Self-built tools / plugins / scripts'}</div>
+    <div class="grid" id="tools-grid"><div class="empty">${t('common.loading')}</div></div>
   `;
 
   let tools = [];
