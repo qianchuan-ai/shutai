@@ -218,16 +218,14 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* 主题切换器 */
-.theme-switcher {
+.theme-switcher, .lang-switcher {
   display: flex;
   gap: 8px;
-  padding: 10px 8px;
+  padding: 8px;
   border-top: 2px solid var(--border);
-  margin-top: 8px;
   align-items: center;
 }
-.theme-switcher::before {
-  content: '主题';
+.switcher-label {
   font-size: 9px;
   color: var(--dim-2);
   font-weight: 700;
@@ -248,6 +246,31 @@ input, textarea, select { font-family: inherit; }
 .theme-dot.active {
   border-color: var(--ink);
   box-shadow: 0 0 0 2px var(--brand-soft);
+}
+
+/* 语言切换按钮 */
+.lang-btn {
+  width: 28px;
+  height: 22px;
+  border: 2px solid var(--border-2);
+  background: var(--bg);
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: var(--t-fast);
+  padding: 0;
+  font-family: inherit;
+}
+.lang-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.lang-btn.active {
+  background: var(--brand);
+  color: var(--bg);
+  border-color: var(--brand);
 }
 
 .sidebar .loc {
